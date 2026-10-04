@@ -1,0 +1,86 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+*.ipr
+*.iws
+
+# Logs & Temp
+*.log
+.buildlog/
+scratch/
+
+# Environment files & Secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+*.key
+*.jks
+*.keystore
+auth.json
+
+# Databases
+*.sqlite
+*.sqlite-journal
+*.sqlite3
+
+# PHP / Laravel (API & Admin)
+/apps/api/vendor/
+/apps/admin/vendor/
+/apps/api/public/storage
+/apps/admin/public/storage
+/apps/api/public/hot
+/apps/admin/public/hot
+/apps/api/storage/*.key
+/apps/admin/storage/*.key
+/apps/api/storage/framework/cache/*
+!/apps/api/storage/framework/cache/.gitignore
+/apps/api/storage/framework/sessions/*
+!/apps/api/storage/framework/sessions/.gitignore
+/apps/api/storage/framework/views/*
+!/apps/api/storage/framework/views/.gitignore
+/apps/api/storage/logs/*
+!/apps/api/storage/logs/.gitignore
+/apps/admin/storage/framework/cache/*
+!/apps/admin/storage/framework/cache/.gitignore
+/apps/admin/storage/framework/sessions/*
+!/apps/admin/storage/framework/sessions/.gitignore
+/apps/admin/storage/framework/views/*
+!/apps/admin/storage/framework/views/.gitignore
+/apps/admin/storage/logs/*
+!/apps/admin/storage/logs/.gitignore
+.phpunit.result.cache
+.phpunit.cache
+
+# Node / Frontend
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Flutter / Dart (Mobile)
+/apps/mobile/.dart_tool/
+/apps/mobile/.flutter-plugins-dependencies
+/apps/mobile/.pub-cache/
+/apps/mobile/.pub/
+/apps/mobile/build/
+/apps/mobile/coverage/
+/apps/mobile/android/local.properties
+/apps/mobile/android/.gradle/
+/apps/mobile/android/app/build/
+/apps/mobile/ios/Flutter/.last_build_id
+/apps/mobile/ios/Pods/
+/apps/mobile/ios/.symlinks/
+/apps/mobile/ios/Flutter/Flutter.framework
+/apps/mobile/ios/Flutter/Flutter.podspec
+app.*.symbols
+app.*.map.json
+.widget_preview/
+
+# Stitch tool state
+.stitch/

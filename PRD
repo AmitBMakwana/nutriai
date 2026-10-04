@@ -1,0 +1,2181 @@
+Yes. **Flutter is a very good choice** for this app, especially if you want one codebase for Android + iOS and a polished, animation-heavy UI.
+
+For your skill set, I would recommend:
+
+**Flutter + Laravel API + MySQL + Redis + S3 + Gemini/Claude/OpenAI**
+
+rather than putting the entire backend inside Flutter.
+
+Below is a complete PRD you can use as the foundation for development.
+
+# NutriAI — Complete Product Requirements Document
+
+**Product:** NutriAI
+**Type:** AI-powered nutrition & meal tracking mobile app
+**Platforms:** Android + iOS
+**Primary stack:** Flutter + Laravel
+**Version:** MVP v1.0
+**Product positioning:** AI-powered personal nutrition and calorie tracker
+
+> **Tagline:** *Snap your meal. Understand your nutrition. Reach your goal.*
+
+---
+
+# 1. Product Vision
+
+NutriAI helps users track their daily nutrition with minimal manual effort.
+
+Instead of manually searching a food database and entering quantities, the user can:
+
+1. Take a photo of a meal.
+2. Upload it to NutriAI.
+3. AI identifies the food.
+4. AI estimates portions.
+5. AI estimates nutritional values.
+6. User reviews/corrects the result.
+7. Meal is saved.
+8. Dashboard automatically updates.
+
+The application also calculates personalized calorie and macro targets based on the user's profile and goal.
+
+---
+
+# 2. Problem Statement
+
+Traditional calorie trackers require users to:
+
+* search food
+* select serving sizes
+* manually enter quantities
+* calculate calories
+* track macros
+* repeatedly enter common meals
+
+This creates friction.
+
+NutriAI reduces that friction through:
+
+**Camera → AI → Nutrition → Confirmation → Tracking**
+
+---
+
+# 3. Target Users
+
+### Primary
+
+Adults who want to:
+
+* lose weight
+* maintain weight
+* gain weight
+* build muscle
+* understand their eating habits
+
+### Secondary
+
+* fitness enthusiasts
+* gym users
+* busy professionals
+* people tracking macros
+* users following vegetarian diets
+* Indian-food consumers
+
+---
+
+# 4. MVP Goals
+
+The MVP must allow a user to:
+
+### Account
+
+* register
+* login
+* logout
+* reset password
+
+### Profile
+
+* age
+* gender
+* height
+* weight
+* target weight
+* activity level
+* goal
+* diet preference
+
+### Nutrition
+
+* calculate calorie target
+* calculate macro targets
+* track meals
+* track calories
+* track protein
+* track carbohydrates
+* track fat
+* track water
+
+### AI
+
+* take meal photo
+* upload meal photo
+* analyze meal
+* detect food
+* estimate quantity
+* calculate nutrition
+* show confidence
+* allow editing
+
+### Dashboard
+
+* calories consumed
+* calories remaining
+* macro progress
+* meals
+* water
+* daily progress
+
+### Analytics
+
+* weight history
+* calorie history
+* macro history
+* weekly progress
+
+---
+
+# 5. Product Scope
+
+## MVP
+
+```text
+Authentication
+Onboarding
+Profile
+Goal calculation
+Dashboard
+Meal tracking
+AI meal scanner
+Food editing
+Water tracking
+Weight tracking
+Progress charts
+Settings
+```
+
+## Phase 2
+
+```text
+AI Nutrition Coach
+Meal recommendations
+Meal planner
+Shopping list
+AI weekly report
+Favorites
+Custom foods
+Recipes
+```
+
+## Phase 3
+
+```text
+Apple Health
+Google Health Connect
+Wearables
+Steps
+Sleep
+Exercise
+Advanced AI
+Family profiles
+Nutritionist dashboard
+```
+
+---
+
+# 6. User Journey
+
+```text
+Install
+  ↓
+Splash
+  ↓
+Welcome
+  ↓
+Register/Login
+  ↓
+Onboarding
+  ↓
+Select Goal
+  ↓
+Enter Body Information
+  ↓
+Select Activity
+  ↓
+Calculate Nutrition Target
+  ↓
+Dashboard
+  ↓
+Add Meal
+  ↓
+Take Photo
+  ↓
+AI Analysis
+  ↓
+Review Results
+  ↓
+Edit if necessary
+  ↓
+Save
+  ↓
+Dashboard Updated
+```
+
+---
+
+# 7. Flutter Architecture
+
+Use:
+
+```text
+Flutter
+Dart
+Clean Architecture
+Riverpod
+GoRouter
+Dio
+Freezed
+JSON Serializable
+Hive/Isar
+Flutter Secure Storage
+```
+
+Recommended architecture:
+
+```text
+lib/
+│
+├── core/
+│   ├── constants/
+│   ├── theme/
+│   ├── routing/
+│   ├── network/
+│   ├── storage/
+│   ├── errors/
+│   └── utils/
+│
+├── features/
+│   │
+│   ├── auth/
+│   ├── onboarding/
+│   ├── dashboard/
+│   ├── meals/
+│   ├── food/
+│   ├── nutrition/
+│   ├── progress/
+│   ├── water/
+│   ├── profile/
+│   └── settings/
+│
+├── shared/
+│   ├── widgets/
+│   ├── models/
+│   └── extensions/
+│
+└── main.dart
+```
+
+---
+
+# 8. Backend Architecture
+
+Use Laravel as the central backend.
+
+```text
+Flutter
+   │
+   │ HTTPS
+   ↓
+Laravel REST API
+   │
+   ├── Authentication
+   ├── User Management
+   ├── Nutrition Engine
+   ├── Meal Management
+   ├── AI Gateway
+   ├── Analytics
+   ├── Notifications
+   └── Subscription
+   │
+   ├──────── MySQL
+   ├──────── Redis
+   ├──────── S3
+   └──────── AI Providers
+```
+
+---
+
+# 9. Backend Stack
+
+```text
+Laravel
+PHP 8.3+
+MySQL
+Redis
+Laravel Queue
+Laravel Scheduler
+Laravel Sanctum
+S3
+Gemini API
+Claude API
+OpenAI API
+```
+
+---
+
+# 10. Authentication
+
+## Register
+
+Fields:
+
+```text
+Name
+Email
+Password
+Confirm Password
+```
+
+Validation:
+
+```text
+name required
+email valid
+password minimum 8 characters
+email unique
+```
+
+---
+
+## Login
+
+```text
+Email
+Password
+```
+
+Response:
+
+```json
+{
+  "token": "...",
+  "user": {}
+}
+```
+
+Store token securely in Flutter.
+
+Use:
+
+**Flutter Secure Storage**
+
+---
+
+# 11. Onboarding
+
+Onboarding should be divided into multiple screens rather than one long form.
+
+## Step 1 — Goal
+
+Options:
+
+```text
+Lose Weight
+Maintain Weight
+Gain Weight
+Build Muscle
+```
+
+---
+
+## Step 2 — Gender
+
+```text
+Male
+Female
+Prefer not to say
+```
+
+---
+
+## Step 3 — Age
+
+```text
+Date of Birth
+```
+
+---
+
+## Step 4 — Height
+
+Support:
+
+```text
+cm
+ft/in
+```
+
+---
+
+## Step 5 — Current Weight
+
+```text
+kg
+lb
+```
+
+---
+
+## Step 6 — Target Weight
+
+```text
+kg
+lb
+```
+
+---
+
+## Step 7 — Activity
+
+```text
+Sedentary
+Lightly Active
+Moderately Active
+Very Active
+Extremely Active
+```
+
+---
+
+## Step 8 — Diet
+
+```text
+Everything
+Vegetarian
+Vegan
+Pescatarian
+Keto
+Other
+```
+
+---
+
+# 12. Nutrition Calculation Engine
+
+Use Mifflin-St Jeor as an initial estimate.
+
+### Male
+
+```text
+BMR =
+10 × weight
++
+6.25 × height
+-
+5 × age
++
+5
+```
+
+### Female
+
+```text
+BMR =
+10 × weight
++
+6.25 × height
+-
+5 × age
+-
+161
+```
+
+Activity multiplier:
+
+```text
+Sedentary        1.2
+Light            1.375
+Moderate         1.55
+Very Active      1.725
+Extra Active     1.9
+```
+
+Then:
+
+```text
+TDEE = BMR × Activity Factor
+```
+
+Goal adjustment:
+
+```text
+Weight Loss
+TDEE - deficit
+
+Maintenance
+TDEE
+
+Weight Gain
+TDEE + surplus
+```
+
+These should be presented as **estimates**, not medical prescriptions.
+
+---
+
+# 13. Macro Engine
+
+Example configuration:
+
+```text
+Protein = 30%
+Carbs = 40%
+Fat = 30%
+```
+
+Conversion:
+
+```text
+Protein = calories / 4
+Carbs = calories / 4
+Fat = calories / 9
+```
+
+Make these percentages configurable server-side.
+
+---
+
+# 14. Dashboard
+
+Dashboard is the primary screen.
+
+### Header
+
+```text
+Good morning 👋
+
+Amit
+```
+
+### Calorie ring
+
+```text
+1,245 / 2,100 kcal
+
+855 kcal remaining
+```
+
+### Macro cards
+
+```text
+Protein
+72 / 140g
+
+Carbs
+135 / 210g
+
+Fat
+38 / 70g
+```
+
+### Meals
+
+```text
+Breakfast
+420 kcal
+
+Lunch
+510 kcal
+
+Snack
+150 kcal
+```
+
+### Water
+
+```text
+1.5L / 2.5L
+```
+
+### CTA
+
+```text
++ Add Meal
+```
+
+---
+
+# 15. Bottom Navigation
+
+Five tabs:
+
+```text
+Home
+Meals
+Progress
+Coach
+Profile
+```
+
+For MVP, **Coach can be disabled/marked Coming Soon** until Phase 2.
+
+---
+
+# 16. Add Meal
+
+Screen:
+
+```text
+Add Meal
+
+[ Take Photo ]
+
+[ Upload Photo ]
+
+────────────
+
+Search Food
+
+[ Search ]
+```
+
+---
+
+# 17. Camera
+
+Flutter packages:
+
+```text
+camera
+image_picker
+image_cropper
+```
+
+Flow:
+
+```text
+Open Camera
+ ↓
+Capture
+ ↓
+Preview
+ ↓
+Retake / Use Photo
+ ↓
+Upload
+```
+
+---
+
+# 18. Image Processing
+
+Before uploading:
+
+```text
+Resize
+Compress
+Validate
+Upload
+```
+
+Recommended:
+
+```text
+JPEG
+maximum ~2–5 MB
+reasonable resolution
+```
+
+---
+
+# 19. AI Food Analysis
+
+Request:
+
+```http
+POST /api/meals/analyze
+```
+
+Multipart:
+
+```text
+image
+meal_type
+```
+
+Laravel:
+
+```text
+Receive image
+ ↓
+Validate
+ ↓
+Store temporarily
+ ↓
+Send to AI
+ ↓
+Validate AI response
+ ↓
+Return structured result
+```
+
+---
+
+# 20. AI Response
+
+Expected structure:
+
+```json
+{
+  "items": [
+    {
+      "name": "Chicken Biryani",
+      "quantity": 250,
+      "unit": "g",
+      "calories": 480,
+      "protein": 22,
+      "carbs": 58,
+      "fat": 18,
+      "fiber": 4,
+      "confidence": 0.82
+    }
+  ],
+  "total": {
+    "calories": 480,
+    "protein": 22,
+    "carbs": 58,
+    "fat": 18,
+    "fiber": 4
+  }
+}
+```
+
+---
+
+# 21. AI Analysis Screen
+
+Show:
+
+```text
+✨ Meal analyzed
+
+Chicken Biryani
+250g
+
+480 kcal
+
+Protein     22g
+Carbs       58g
+Fat         18g
+```
+
+Confidence:
+
+```text
+82% confidence
+```
+
+Buttons:
+
+```text
+Edit
+Add Food
+Remove Food
+
+[ Save Meal ]
+```
+
+---
+
+# 22. AI Correction
+
+Every AI result must be editable.
+
+User can change:
+
+```text
+Food name
+Quantity
+Serving
+Calories
+Protein
+Carbs
+Fat
+```
+
+This is important because image-based nutrition analysis is inherently approximate.
+
+---
+
+# 23. Meal Detail
+
+Example:
+
+```text
+Lunch
+
+Chicken Biryani
+250g
+
+480 kcal
+
+Protein 22g
+Carbs 58g
+Fat 18g
+
+Captured:
+12:42 PM
+```
+
+Actions:
+
+```text
+Edit
+Duplicate
+Delete
+```
+
+---
+
+# 24. Food Search
+
+Search:
+
+```text
+Food name
+```
+
+Examples:
+
+```text
+Rice
+Roti
+Dal
+Paneer
+Apple
+Banana
+Chicken
+```
+
+Results:
+
+```text
+Food
+Serving
+Calories
+Protein
+Carbs
+Fat
+```
+
+---
+
+# 25. Custom Food
+
+Allow users to create:
+
+```text
+Food name
+Serving size
+Calories
+Protein
+Carbs
+Fat
+Fiber
+```
+
+---
+
+# 26. Favorites
+
+Users can favorite:
+
+```text
+Foods
+Meals
+Recipes
+```
+
+Then quickly add them.
+
+---
+
+# 27. Water Tracking
+
+Dashboard:
+
+```text
+Water
+
+1.5L / 2.5L
+
+[-] 250ml [+]
+```
+
+Preset:
+
+```text
+250ml
+500ml
+750ml
+1000ml
+```
+
+---
+
+# 28. Weight Tracking
+
+Allow:
+
+```text
+Add Weight
+```
+
+Fields:
+
+```text
+Weight
+Date
+```
+
+Chart:
+
+```text
+Weight
+│
+│ ●
+│   ●
+│     ●
+│       ●
+└────────────
+```
+
+---
+
+# 29. Progress Screen
+
+Sections:
+
+### Weight
+
+```text
+Current
+72kg
+
+Target
+68kg
+```
+
+### Calories
+
+```text
+Average daily calories
+```
+
+### Macros
+
+```text
+Protein
+Carbs
+Fat
+```
+
+### Time periods
+
+```text
+7 Days
+30 Days
+3 Months
+6 Months
+1 Year
+```
+
+---
+
+# 30. AI Nutrition Coach — Phase 2
+
+This can become the premium feature.
+
+User:
+
+> What should I eat tonight?
+
+Backend sends:
+
+```text
+Daily target
+Consumed calories
+Remaining calories
+Remaining macros
+Diet preference
+Food preferences
+Recent meals
+```
+
+AI returns:
+
+```text
+Dinner recommendation
+
+Paneer Tikka
+2 Rotis
+Green Salad
+
+Estimated:
+
+590 kcal
+34g protein
+55g carbs
+19g fat
+```
+
+---
+
+# 31. AI Weekly Report
+
+Every Sunday:
+
+```text
+Your Weekly Nutrition Report
+
+Average calories:
+1,920 kcal
+
+Average protein:
+118g
+
+Meals tracked:
+19
+
+Weight:
+-0.6kg
+
+Highlights:
+✓ Protein target achieved 5 days
+✓ Hydration improved
+
+Areas to improve:
+• Meal tracking consistency
+• Vegetable intake
+```
+
+Keep health recommendations appropriately qualified; avoid presenting AI output as medical diagnosis or treatment.
+
+---
+
+# 32. Notifications
+
+Types:
+
+```text
+Meal reminder
+Water reminder
+Weight reminder
+Daily summary
+Weekly report
+```
+
+Example:
+
+```text
+🍽️ Lunch time
+
+You still have 820 calories available today.
+```
+
+---
+
+# 33. Profile
+
+```text
+Profile
+
+Avatar
+Name
+Email
+
+Goal
+Weight
+Target Weight
+Height
+Activity
+Diet
+
+Edit Profile
+Nutrition Goals
+Units
+Notifications
+Privacy
+Subscription
+Logout
+```
+
+---
+
+# 34. Settings
+
+```text
+Settings
+
+Account
+Notifications
+Units
+Language
+Theme
+
+Security
+Change Password
+
+Privacy
+Delete Account
+
+About
+Terms
+Privacy Policy
+```
+
+---
+
+# 35. Dark Mode
+
+Support:
+
+```text
+Light
+Dark
+System
+```
+
+---
+
+# 36. Languages
+
+MVP:
+
+```text
+English
+```
+
+Phase 2:
+
+```text
+Hindi
+Gujarati
+```
+
+This could be particularly useful for Indian-food recognition and meal tracking.
+
+---
+
+# 37. Database
+
+Core tables:
+
+```text
+users
+user_profiles
+nutrition_goals
+foods
+meals
+meal_items
+water_logs
+weight_logs
+daily_summaries
+favorites
+custom_foods
+ai_analyses
+subscriptions
+notifications
+```
+
+---
+
+# 38. `ai_analyses`
+
+```text
+id
+user_id
+meal_id
+provider
+model
+image_path
+raw_response
+parsed_response
+confidence
+processing_time
+status
+created_at
+```
+
+Statuses:
+
+```text
+pending
+processing
+completed
+failed
+```
+
+---
+
+# 39. API Specification
+
+### Auth
+
+```text
+POST /api/register
+POST /api/login
+POST /api/logout
+GET  /api/me
+POST /api/password/forgot
+POST /api/password/reset
+```
+
+### Profile
+
+```text
+GET /api/profile
+PUT /api/profile
+```
+
+### Goals
+
+```text
+GET /api/goals
+POST /api/goals/calculate
+PUT /api/goals
+```
+
+### Dashboard
+
+```text
+GET /api/dashboard
+```
+
+### Meals
+
+```text
+GET    /api/meals
+POST   /api/meals
+GET    /api/meals/{id}
+PUT    /api/meals/{id}
+DELETE /api/meals/{id}
+```
+
+### AI
+
+```text
+POST /api/meals/analyze
+GET  /api/ai-analysis/{id}
+```
+
+### Foods
+
+```text
+GET  /api/foods/search
+POST /api/foods/custom
+POST /api/foods/{id}/favorite
+```
+
+### Water
+
+```text
+GET  /api/water
+POST /api/water
+DELETE /api/water/{id}
+```
+
+### Weight
+
+```text
+GET  /api/weight
+POST /api/weight
+DELETE /api/weight/{id}
+```
+
+### Progress
+
+```text
+GET /api/progress
+GET /api/progress/weekly
+GET /api/progress/monthly
+```
+
+---
+
+# 40. Laravel Service Architecture
+
+```text
+app/
+│
+├── Services/
+│
+│   ├── Nutrition/
+│   │   ├── CalorieCalculator.php
+│   │   ├── MacroCalculator.php
+│   │   └── NutritionGoalService.php
+│   │
+│   ├── AI/
+│   │   ├── AIProviderInterface.php
+│   │   ├── GeminiProvider.php
+│   │   ├── ClaudeProvider.php
+│   │   ├── OpenAIProvider.php
+│   │   └── AIProviderManager.php
+│   │
+│   ├── Meal/
+│   │   ├── MealService.php
+│   │   └── MealAnalysisService.php
+│   │
+│   └── Dashboard/
+│       └── DashboardService.php
+```
+
+---
+
+# 41. AI Provider Interface
+
+```php
+interface FoodAnalysisProvider
+{
+    public function analyze(string $imagePath): array;
+}
+```
+
+Then:
+
+```text
+GeminiProvider
+ClaudeProvider
+OpenAIProvider
+```
+
+This lets you change AI providers without changing your mobile app.
+
+---
+
+# 42. Flutter API Layer
+
+Use:
+
+```text
+Dio
+```
+
+Example architecture:
+
+```text
+ApiClient
+   ↓
+AuthApi
+MealApi
+ProfileApi
+DashboardApi
+ProgressApi
+```
+
+---
+
+# 43. Flutter State Management
+
+Use **Riverpod**.
+
+Example:
+
+```text
+authProvider
+profileProvider
+dashboardProvider
+mealProvider
+nutritionProvider
+progressProvider
+waterProvider
+```
+
+Avoid putting all application state into one massive provider.
+
+---
+
+# 44. Offline Strategy
+
+Store locally:
+
+```text
+Today's dashboard
+Recent meals
+Profile
+Nutrition goals
+```
+
+If internet is unavailable:
+
+```text
+Create meal locally
+       ↓
+Queue request
+       ↓
+Internet restored
+       ↓
+Sync API
+```
+
+This is especially useful for mobile.
+
+---
+
+# 45. Design System
+
+### Style
+
+```text
+Modern
+Minimal
+Premium
+Friendly
+Health-tech
+```
+
+### Components
+
+```text
+PrimaryButton
+SecondaryButton
+InputField
+CalorieRing
+MacroCard
+MealCard
+FoodCard
+ProgressChart
+BottomNavigation
+Modal
+BottomSheet
+LoadingSkeleton
+EmptyState
+ErrorState
+```
+
+---
+
+# 46. UI Design Principles
+
+Use:
+
+```text
+8px spacing system
+Large readable typography
+Rounded cards
+Consistent iconography
+Strong visual hierarchy
+Large touch targets
+Minimal forms
+Clear CTAs
+Skeleton loading
+Empty states
+Error recovery
+```
+
+---
+
+# 47. Flutter Theme
+
+Create:
+
+```text
+AppTheme
+LightTheme
+DarkTheme
+AppColors
+AppTypography
+AppSpacing
+AppRadius
+```
+
+Don't hard-code styling throughout widgets.
+
+---
+
+# 48. Analytics
+
+Track product events:
+
+```text
+app_opened
+signup_completed
+onboarding_completed
+meal_photo_taken
+meal_analysis_started
+meal_analysis_completed
+meal_analysis_failed
+meal_saved
+meal_edited
+food_search
+water_logged
+weight_logged
+subscription_started
+```
+
+This lets you measure where users drop off.
+
+---
+
+# 49. Error Handling
+
+Every API request needs:
+
+```text
+Loading
+Success
+Error
+Empty
+Retry
+```
+
+AI failures:
+
+```text
+AI unavailable
+
+[Try Again]
+
+or
+
+[Enter Meal Manually]
+```
+
+Never leave the user stuck.
+
+---
+
+# 50. Security
+
+### Mobile
+
+Use:
+
+```text
+Flutter Secure Storage
+HTTPS
+Certificate considerations
+No API secrets
+```
+
+### Backend
+
+Use:
+
+```text
+Sanctum
+Rate limiting
+Validation
+Policies
+Authorization
+File validation
+Signed S3 URLs
+Encrypted secrets
+Audit logs
+```
+
+### AI
+
+Never expose:
+
+```text
+GEMINI_API_KEY
+OPENAI_API_KEY
+ANTHROPIC_API_KEY
+```
+
+inside Flutter.
+
+---
+
+# 51. AI Cost Control
+
+AI image analysis can become your biggest variable cost.
+
+Implement:
+
+```text
+Image compression
+Token limits
+Rate limits
+Caching
+Usage quotas
+Free-plan limits
+Model selection
+```
+
+Example:
+
+```text
+Free
+5 scans/month
+
+Pro
+100 scans/month
+
+Premium
+Unlimited/fair-use
+```
+
+---
+
+# 52. Subscription Architecture
+
+Don't let Flutter decide:
+
+```text
+isPro = true
+```
+
+Instead:
+
+```text
+App
+ ↓
+Laravel
+ ↓
+Subscription provider
+ ↓
+Entitlement
+```
+
+For mobile subscriptions:
+
+```text
+RevenueCat
+```
+
+can simplify App Store and Play Store entitlement handling.
+
+---
+
+# 53. Admin Panel
+
+Build a separate Laravel admin interface.
+
+Admin can manage:
+
+```text
+Users
+Foods
+Meals
+AI usage
+AI providers
+AI costs
+Subscriptions
+Plans
+Reports
+Feedback
+System settings
+```
+
+Dashboard:
+
+```text
+Users
+10,245
+
+Meals
+124,521
+
+AI scans
+48,231
+
+AI success
+96.2%
+
+Monthly revenue
+₹...
+```
+
+---
+
+# 54. AI Admin Controls
+
+Admin should be able to configure:
+
+```text
+AI provider
+AI model
+Temperature
+Max tokens
+Prompt
+Daily user limit
+Free-user limit
+Pro-user limit
+```
+
+Example:
+
+```text
+Food Analysis Provider
+[ Gemini ▼ ]
+
+Model
+[ Gemini ... ▼ ]
+
+Max scans
+[ 100 ]
+```
+
+---
+
+# 55. MVP Development Roadmap
+
+## Phase 1 — Foundation
+
+```text
+Flutter project
+Laravel project
+GitHub
+Database
+API architecture
+Theme
+Navigation
+```
+
+---
+
+## Phase 2 — Authentication
+
+```text
+Register
+Login
+Logout
+Password reset
+Secure token
+```
+
+---
+
+## Phase 3 — Onboarding
+
+```text
+Goal
+Gender
+Age
+Height
+Weight
+Activity
+Diet
+```
+
+---
+
+## Phase 4 — Nutrition Engine
+
+```text
+BMR
+TDEE
+Calories
+Macros
+Goals
+```
+
+---
+
+## Phase 5 — Dashboard
+
+```text
+Calories
+Macros
+Meals
+Water
+Progress
+```
+
+---
+
+## Phase 6 — Meal Tracking
+
+```text
+Food search
+Manual entry
+Custom food
+Meal CRUD
+```
+
+---
+
+## Phase 7 — AI
+
+```text
+Camera
+Image upload
+Gemini
+Food detection
+Nutrition estimation
+Confidence
+Editing
+```
+
+---
+
+## Phase 8 — Analytics
+
+```text
+Weight
+Calories
+Macros
+Charts
+Weekly summary
+```
+
+---
+
+## Phase 9 — Subscription
+
+```text
+Free
+Pro
+RevenueCat
+Entitlements
+```
+
+---
+
+## Phase 10 — Production
+
+```text
+Testing
+Security
+Monitoring
+App Store
+Play Store
+```
+
+---
+
+# 56. Suggested Flutter Packages
+
+```text
+flutter_riverpod
+go_router
+dio
+freezed_annotation
+json_annotation
+flutter_secure_storage
+image_picker
+camera
+image_cropper
+cached_network_image
+fl_chart
+intl
+permission_handler
+connectivity_plus
+shared_preferences
+```
+
+For local persistence, choose **one** primary database strategy rather than adding several storage packages unnecessarily.
+
+---
+
+# 57. Suggested Laravel Packages
+
+```text
+laravel/sanctum
+predis/predis
+aws/aws-sdk-php
+spatie/laravel-permission
+spatie/laravel-medialibrary
+```
+
+Add only what the implementation actually needs.
+
+---
+
+# 58. Production Infrastructure
+
+```text
+                    CloudFront
+                        │
+                        ↓
+                  Load Balancer
+                        │
+                        ↓
+                 Laravel API
+                  /         \
+                 /           \
+              MySQL        Redis
+                │             │
+                │           Queue
+                │             │
+                └──────┬──────┘
+                       ↓
+                       S3
+                       │
+                       ↓
+                  AI Gateway
+                 /     |     \
+             Gemini  Claude  OpenAI
+```
+
+---
+
+# 59. Recommended MVP Cost Strategy
+
+Start cheaply:
+
+```text
+Flutter
+Laravel
+MySQL
+Single server
+S3
+Gemini
+GitHub
+Expo/EAS
+```
+
+Don't start with:
+
+```text
+Kubernetes
+Microservices
+Multiple databases
+Complex event architecture
+Multiple AI providers
+```
+
+Start modular but simple.
+
+---
+
+# 60. Definition of Done
+
+The MVP is complete when a new user can:
+
+```text
+Install app
+   ↓
+Register
+   ↓
+Complete onboarding
+   ↓
+Receive calorie/macro target
+   ↓
+Open dashboard
+   ↓
+Take food photo
+   ↓
+AI recognizes food
+   ↓
+Review nutrition
+   ↓
+Edit nutrition
+   ↓
+Save meal
+   ↓
+Dashboard updates
+   ↓
+Track water
+   ↓
+Track weight
+   ↓
+View progress
+   ↓
+Logout/login again
+```
+
+And all data persists correctly across sessions/devices.
+
+---
+
+# 61. Recommended Build Order for You
+
+Given that you're already comfortable with **Laravel, APIs, MySQL and AI integrations**, I would build it in this exact order:
+
+```text
+STEP 01
+Create GitHub repositories
+
+nutriai-mobile
+nutriai-api
+nutriai-admin
+```
+
+↓
+
+```text
+STEP 02
+Create Stitch design
+
+15–20 screens
+```
+
+↓
+
+```text
+STEP 03
+Create Flutter application
+
+Architecture
+Theme
+Router
+Riverpod
+Dio
+```
+
+↓
+
+```text
+STEP 04
+Create Laravel API
+
+Auth
+Models
+Migrations
+Services
+Resources
+```
+
+↓
+
+```text
+STEP 05
+Connect Flutter ↔ Laravel
+
+Login
+Register
+Profile
+```
+
+↓
+
+```text
+STEP 06
+Build onboarding
+
+Profile
+Goal
+Activity
+Diet
+```
+
+↓
+
+```text
+STEP 07
+Build nutrition engine
+
+BMR
+TDEE
+Calories
+Macros
+```
+
+↓
+
+```text
+STEP 08
+Build dashboard
+
+Calories
+Macros
+Meals
+Water
+```
+
+↓
+
+```text
+STEP 09
+Build manual meal tracking
+
+Search
+Add
+Edit
+Delete
+```
+
+↓
+
+```text
+STEP 10
+Build AI scanner
+
+Camera
+Upload
+Laravel
+Gemini
+JSON
+Validation
+```
+
+↓
+
+```text
+STEP 11
+Build progress
+
+Weight
+Calories
+Macros
+Charts
+```
+
+↓
+
+```text
+STEP 12
+Add subscriptions
+
+RevenueCat
+```
+
+↓
+
+```text
+STEP 13
+Build admin
+
+Users
+AI
+Foods
+Subscriptions
+Analytics
+```
+
+↓
+
+```text
+STEP 14
+QA
+
+Android
+iOS
+Network
+AI errors
+Security
+```
+
+↓
+
+```text
+STEP 15
+Release
+
+Google Play
+App Store
+```
+
+---
+
+## One important change I'd make from the video
+
+Rather than making a direct clone, I'd make the product architecture **AI-provider independent** and initially focus on **Indian food recognition + nutrition tracking**.
+
+That gives you:
+
+**Flutter mobile app + Laravel SaaS backend + AI food vision + personalized nutrition engine + subscription system**, while leaving room for an AI coach, meal planner, RAG knowledge base, wearables, Gujarati/Hindi support, and a web/admin platform later.
+
+If you want to actually start building it with **Antigravity**, the next useful artifact is a **single master implementation prompt + 15–20 smaller sequential Antigravity prompts**, including the exact Flutter folder structure, Laravel migrations/models/controllers/services, API contracts, Stitch prompts, database ERD, and implementation/test checklist.

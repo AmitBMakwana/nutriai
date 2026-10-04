@@ -1,0 +1,2 @@
+# NutriAI Architecture
+Architecture Documentation

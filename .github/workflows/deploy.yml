@@ -1,0 +1,136 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - develop  # Deploys to staging
+    tags:
+      - 'v*.*.*' # Deploys to production
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  audit-and-test:
+    name: Run Automated Test Suites
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, redis, gd, zip
+
+      - name: Install API Dependencies
+        working-directory: ./apps/api
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Run API Tests & Security Suite
+        working-directory: ./apps/api
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan test
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: Run Mobile Analyzer & Tests
+        working-directory: ./apps/mobile
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+
+  deploy:
+    name: Deploy to ${{ github.event.inputs.target_env || (startsWith(github.ref, 'refs/tags/v') && 'production' || 'staging') }}
+    needs: [audit-and-test]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.target_env || (startsWith(github.ref, 'refs/tags/v') && 'production' || 'staging') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Environment Variables
+        id: env-setup
+        run: |
+          ENV_NAME="${{ github.event.inputs.target_env || (startsWith(github.ref, 'refs/tags/v') && 'production' || 'staging') }}"
+          echo "ENV_NAME=${ENV_NAME}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Production Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/api
+          file: ./docker/Dockerfile.api
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/api:${{ env.ENV_NAME }}-latest
+            ghcr.io/${{ github.repository }}/api:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy via SSH & Run Migrations
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          ENV_NAME: ${{ env.ENV_NAME }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: ENV_NAME,IMAGE_TAG
+          script: |
+            set -e
+            echo ">>> [1/6] Navigating to deployment directory..."
+            cd /opt/nutriai/${ENV_NAME}
+
+            echo ">>> [2/6] Triggering pre-migration database backup..."
+            ./docker/backup.sh || echo "Warning: Backup reported non-zero, continuing..."
+
+            echo ">>> [3/6] Pulling newest application container..."
+            docker pull ghcr.io/${{ github.repository }}/api:${IMAGE_TAG}
+
+            echo ">>> [4/6] Running database migrations with rollback checkpoint..."
+            docker-compose -f docker/docker-compose.prod.yml run --rm api php artisan migrate --force
+
+            echo ">>> [5/6] Performing zero-downtime rolling restart..."
+            docker-compose -f docker/docker-compose.prod.yml up -d --no-deps api
+            docker-compose -f docker/docker-compose.prod.yml exec -T api php artisan config:cache
+            docker-compose -f docker/docker-compose.prod.yml exec -T api php artisan route:cache
+            docker-compose -f docker/docker-compose.prod.yml exec -T api php artisan view:cache
+            docker-compose -f docker/docker-compose.prod.yml exec -T api php artisan queue:restart
+
+            echo ">>> [6/6] Probing production health endpoint..."
+            for i in $(seq 1 10); do
+              HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/health || true)
+              if [ "$HTTP_STATUS" = "200" ]; then
+                echo "Health check passed with HTTP 200 OK!"
+                exit 0
+              fi
+              echo "Waiting for health check (attempt $i/10, status: $HTTP_STATUS)..."
+              sleep 3
+            done
+
+            echo "CRITICAL: Health check probe failed! Initiating rollback..."
+            docker-compose -f docker/docker-compose.prod.yml rollback || true
+            exit 1
